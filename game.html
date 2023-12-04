@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Point and Click Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    #game-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    #start-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    #target {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      color: #333;
+    }
+    #timer {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<div id="game-container">
+  <div id="start-btn" onclick="startGame()">Start Game</div>
+  <div id="target"></div>
+  <div id="score">Score: 0</div>
+  <div id="timer">Time: 60s</div>
+</div>
+
+<script>
+  let score = 0;
+  let timer;
+  let timeLeft;
+  const targetScore = 5; // Set your target score here
+
+  function startGame() {
+    score = 0;
+    timeLeft = 10;
+    updateScore();
+    updateTimer();
+
+    document.getElementById('start-btn').style.display = 'none';
+    document.getElementById('target').style.display = 'block';
+
+    // Set up a timer that decrements every second
+    timer = setInterval(function () {
+      timeLeft--;
+
+      if (timeLeft <= 0 || score >= targetScore) {
+        endGame();
+      } else {
+        updateTimer();
+      }
+    }, 1000);
+
+    // Move the target to a random position
+    moveTarget();
+  }
+
+  function endGame() {
+    clearInterval(timer);
+    if (score >= targetScore) {
+      alert(`Congratulations! You won with a score of ${score}.`);
+    } else {
+      alert(`Game Over! Your score is ${score}. You didn't reach the target score.`);
+    }
+    resetGame();
+  }
+
+  function updateScore() {
+    document.getElementById('score').innerText = `Score: ${score}`;
+  }
+
+  function updateTimer() {
+    document.getElementById('timer').innerText = `Time: ${timeLeft}s`;
+  }
+
+  function moveTarget() {
+    const target = document.getElementById('target');
+    const maxX = window.innerWidth - target.clientWidth;
+    const maxY = window.innerHeight - target.clientHeight;
+
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
+
+    target.style.left = `${randomX}px`;
+    target.style.top = `${randomY}px`;
+  }
+
+  function incrementScore() {
+    score++;
+    updateScore();
+    moveTarget();
+  }
+
+  function resetGame() {
+    document.getElementById('start-btn').style.display = 'block';
+    document.getElementById('target').style.display = 'none';
+  }
+
+  // Add click event listener to the target
+  document.getElementById('target').addEventListener('click', incrementScore);
+
+</script>
+
+</body>
+</html>
